@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yashashree Shinde — Data Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --accent: #7c6af7;
+    --accent2: #f76a8a;
+    --accent3: #6af7c8;
+    --yellow: #f7d76a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 40px; height: 40px;
+    border: 1px solid rgba(124,106,247,0.4);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.15s ease;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(124,106,247,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,106,247,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10,10,15,0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-inner { max-width: 1100px; margin: 0 auto; width: 100%; }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 2rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 .line1 { display: block; color: var(--text); }
+  .hero h1 .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 520px;
+    margin-bottom: 3rem;
+    font-weight: 300;
+  }
+
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 4rem; }
+
+  .btn-primary {
+    padding: 0.9rem 2rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 2px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .btn-primary:hover { background: #9580ff; transform: translateY(-2px); }
+
+  .btn-outline {
+    padding: 0.9rem 2rem;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: none;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat-item { }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    display: block;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Floating elements */
+  .hero-float {
+    position: absolute;
+    right: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    opacity: 0.6;
+  }
+  .tech-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--muted);
+    background: var(--surface);
+    letter-spacing: 0.05em;
+    animation: float 3s ease-in-out infinite;
+  }
+  .tech-pill:nth-child(2) { animation-delay: 0.5s; margin-left: 1.5rem; }
+  .tech-pill:nth-child(3) { animation-delay: 1s; }
+  .tech-pill:nth-child(4) { animation-delay: 1.5s; margin-left: 1rem; }
+  .tech-pill:nth-child(5) { animation-delay: 2s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* Sections */
+  section {
+    padding: 6rem 3rem;
+    position: relative;
+    z-index: 1;
+  }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 1.5rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 3rem;
+    color: var(--text);
+  }
+
+  /* Projects */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .project-card:hover { border-color: rgba(124,106,247,0.3); transform: translateY(-4px); }
+  .project-card:hover::before { transform: scaleX(1); }
+
+  .project-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+  }
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 0.8rem;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .project-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+  }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.3rem 0.7rem;
+    background: rgba(124,106,247,0.08);
+    border: 1px solid rgba(124,106,247,0.15);
+    color: var(--accent);
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+  }
+  .project-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.2s;
+  }
+  .project-link:hover { color: var(--accent); }
+
+  .project-highlight {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .highlight-item {
+    font-size: 0.8rem;
+    color: var(--muted);
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+  .highlight-item::before {
+    content: '→';
+    color: var(--accent3);
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    margin-top: 0.05rem;
+  }
+
+  /* Featured project */
+  .project-card.featured {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+    padding: 2.5rem;
+  }
+  .project-card.featured::before {
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+  }
+  .featured-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.25rem 0.6rem;
+    background: rgba(106,247,200,0.1);
+    border: 1px solid rgba(106,247,200,0.2);
+    color: var(--accent3);
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  /* Skills */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  .skill-group {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    border-radius: 4px;
+  }
+  .skill-group-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .skill-items { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .skill-item {
+    font-size: 0.8rem;
+    color: var(--muted);
+    padding: 0.3rem 0.6rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+
+  /* Experience */
+  .exp-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 3rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .exp-item:last-child { border-bottom: none; }
+  .exp-meta { }
+  .exp-company {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+  .exp-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .exp-role {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+  .exp-points { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .exp-points li {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+    display: flex;
+    gap: 0.8rem;
+    font-weight: 300;
+  }
+  .exp-points li::before {
+    content: '▸';
+    color: var(--accent);
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    margin-top: 0.2rem;
+  }
+
+  /* Contact */
+  .contact-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .contact-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .contact-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+  .contact-title span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .contact-links { display: flex; flex-direction: column; gap: 1rem; }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+    font-size: 0.9rem;
+  }
+  .contact-link:hover { border-color: var(--accent); background: rgba(124,106,247,0.05); }
+  .contact-link-icon {
+    width: 2rem;
+    height: 2rem;
+    background: rgba(124,106,247,0.1);
+    border: 1px solid rgba(124,106,247,0.2);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .contact-link-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 0.1rem;
+  }
+  .contact-link-value { font-size: 0.88rem; color: var(--text); }
+
+  /* Footer */
+  footer {
+    padding: 2rem 3rem;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  footer .logo span { color: var(--accent); }
+  footer p {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* Animations */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 0.7s ease forwards;
+  }
+  .fade-up:nth-child(1) { animation-delay: 0.1s; }
+  .fade-up:nth-child(2) { animation-delay: 0.2s; }
+  .fade-up:nth-child(3) { animation-delay: 0.3s; }
+  .fade-up:nth-child(4) { animation-delay: 0.4s; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="#" class="nav-logo">YS<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag fade-up">Available for Summer 2026 Internship</div>
+    <h1 class="fade-up">
+      <span class="line1">Yashashree</span>
+      <span class="line2">Shinde.</span>
+    </h1>
+    <p class="hero-desc fade-up">
+      Data Engineer building production-grade pipelines, AI-powered analytics, 
+      and real-time intelligence systems. MS Applied Data Intelligence @ SJSU.
+      Former Software Engineer @ Barclays.
+    </p>
+    <div class="hero-ctas fade-up">
+      <a href="https://github.com/yashashree5" target="_blank" class="btn-primary">↗ GitHub</a>
+      <a href="https://linkedin.com/in/yashashree1" target="_blank" class="btn-outline">LinkedIn</a>
+      <a href="mailto:yashashree.shinde@sjsu.edu" class="btn-outline">Email Me</a>
+    </div>
+    <div class="hero-stats fade-up">
+      <div class="stat-item">
+        <span class="stat-num">2+</span>
+        <span class="stat-label">Years at Barclays</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">3</span>
+        <span class="stat-label">Production Projects</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">15K+</span>
+        <span class="stat-label">Daily Events Processed</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">70%</span>
+        <span class="stat-label">Triage Time Reduced</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-float">
+    <div class="tech-pill">Apache Airflow</div>
+    <div class="tech-pill">Snowflake</div>
+    <div class="tech-pill">dbt</div>
+    <div class="tech-pill">PySpark</div>
+    <div class="tech-pill">OpenAI GPT</div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-inner">
+    <div class="section-label">Work</div>
+    <h2 class="section-title">Selected Projects</h2>
+
+    <div class="projects-grid">
+
+      <!-- BART - Featured -->
+      <div class="project-card featured">
+        <div>
+          <div class="featured-badge">Featured Project</div>
+          <div class="project-num">01 / 03</div>
+          <div class="project-title">BART Real-Time Transit Intelligence Pipeline</div>
+          <p class="project-desc">
+            Production-grade end-to-end data pipeline ingesting live BART API feeds, 
+            processing 15,000+ transit events daily with PySpark, modeling in Snowflake 
+            via dbt, and surfacing AI-generated delay insights via GPT-3.5.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Python</span>
+            <span class="tag">PySpark</span>
+            <span class="tag">Snowflake</span>
+            <span class="tag">Airflow</span>
+            <span class="tag">dbt</span>
+            <span class="tag">GPT-3.5</span>
+            <span class="tag">Streamlit</span>
+          </div>
+          <a href="https://github.com/yashashree5/bart-transit-intelligence" target="_blank" class="project-link">↗ View on GitHub</a>
+        </div>
+        <div class="project-highlight">
+          <div class="highlight-item">Processes <strong style="color:var(--text)">15,000+ transit events daily</strong> across 595 trains and 40+ stations</div>
+          <div class="highlight-item">Medallion architecture (Raw → Staging → Marts) with <strong style="color:var(--text)">60% query latency reduction</strong></div>
+          <div class="highlight-item">Z-score anomaly detection flags unusual delay patterns automatically</div>
+          <div class="highlight-item">GPT-3.5 generates plain-English delay summaries every 30 minutes</div>
+          <div class="highlight-item">Token bucket rate limiting + exponential backoff retry logic</div>
+          <div class="highlight-item">Live Streamlit dashboard with Plotly visualizations</div>
+        </div>
+      </div>
+
+      <!-- Incident IQ -->
+      <div class="project-card">
+        <div class="project-num">02 / 03</div>
+        <div class="project-title">IncidentIQ — AI-Powered Incident Management</div>
+        <p class="project-desc">
+          Fault-tolerant ELT pipeline automating root-cause categorization and 
+          AI-driven triage across 1,000+ monthly incidents using OpenAI embeddings 
+          and dbt transformation layer.
+        </p>
+        <div class="project-tags">
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">Airflow</span>
+          <span class="tag">dbt</span>
+          <span class="tag">OpenAI</span>
+          <span class="tag">Docker</span>
+        </div>
+        <div class="project-highlight">
+          <div class="highlight-item">Reduced triage time by <strong style="color:var(--text)">70%</strong> — from 6.5hrs to 2hrs</div>
+          <div class="highlight-item">Semantic similarity engine cuts MTTR by <strong style="color:var(--text)">40%</strong></div>
+          <div class="highlight-item">Zero data loss across 1,000+ monthly incidents</div>
+        </div>
+        <a href="https://github.com/yashashree5/IncidentIQ" target="_blank" class="project-link">↗ View on GitHub</a>
+      </div>
+
+      <!-- Smart Pantry -->
+      <div class="project-card">
+        <div class="project-num">03 / 03</div>
+        <div class="project-title">SnowChef — Smart Pantry Recommendation System</div>
+        <p class="project-desc">
+          Snowflake-based recommendation engine using content-based filtering, 
+          cosine similarity ranking, and dbt incremental models to surface 
+          personalized recipe recommendations from pantry data.
+        </p>
+        <div class="project-tags">
+          <span class="tag">Python</span>
+          <span class="tag">Snowflake</span>
+          <span class="tag">Airflow</span>
+          <span class="tag">dbt</span>
+          <span class="tag">Streamlit</span>
+        </div>
+        <div class="project-highlight">
+          <div class="highlight-item">Cosine similarity ranking with ingredient-level feature vectors</div>
+          <div class="highlight-item">Full dbt lineage tracking with incremental materialization</div>
+          <div class="highlight-item">Dynamic filtering by dietary preference, cuisine, and availability</div>
+        </div>
+        <a href="https://github.com/yashashree5/Snowchef" target="_blank" class="project-link">↗ View on GitHub</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-inner">
+    <div class="section-label">Expertise</div>
+    <h2 class="section-title">Tech Stack</h2>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <div class="skill-group-title">Data Engineering</div>
+        <div class="skill-items">
+          <span class="skill-item">Apache Airflow</span>
+          <span class="skill-item">Apache Spark</span>
+          <span class="skill-item">dbt</span>
+          <span class="skill-item">ETL/ELT</span>
+          <span class="skill-item">Kafka</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Cloud & Warehouse</div>
+        <div class="skill-items">
+          <span class="skill-item">Snowflake</span>
+          <span class="skill-item">AWS S3</span>
+          <span class="skill-item">AWS Glue</span>
+          <span class="skill-item">BigQuery</span>
+          <span class="skill-item">Redshift</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Languages</div>
+        <div class="skill-items">
+          <span class="skill-item">Python</span>
+          <span class="skill-item">SQL</span>
+          <span class="skill-item">Java</span>
+          <span class="skill-item">Bash</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">AI & ML</div>
+        <div class="skill-items">
+          <span class="skill-item">OpenAI API</span>
+          <span class="skill-item">GPT-3.5/4</span>
+          <span class="skill-item">Scikit-learn</span>
+          <span class="skill-item">Pandas</span>
+          <span class="skill-item">NumPy</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Databases</div>
+        <div class="skill-items">
+          <span class="skill-item">PostgreSQL</span>
+          <span class="skill-item">MySQL</span>
+          <span class="skill-item">MongoDB</span>
+          <span class="skill-item">Redis</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">DevOps & Viz</div>
+        <div class="skill-items">
+          <span class="skill-item">Docker</span>
+          <span class="skill-item">Git</span>
+          <span class="skill-item">Streamlit</span>
+          <span class="skill-item">Tableau</span>
+          <span class="skill-item">Power BI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-inner">
+    <div class="section-label">Background</div>
+    <h2 class="section-title">Experience</h2>
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-company">Barclays</div>
+        <div class="exp-period">Jul 2023 – Aug 2025</div>
+      </div>
+      <div>
+        <div class="exp-role">Software Engineer</div>
+        <ul class="exp-points">
+          <li>Accelerated high-volume trade booking and batch-processing pipelines by tuning complex SQL queries and optimizing Java/Spring Boot services, improving throughput by 20%.</li>
+          <li>Designed automated data quality monitoring frameworks across 50+ mission-critical financial datasets, reducing downstream reporting errors by 35%.</li>
+          <li>Improved reliability of distributed microservices handling trade data ingestion, reducing data-flow failures by 30%.</li>
+          <li>Delivered end-to-end production support including incident triage and root-cause analysis, reducing MTTR by 25%.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-company">SJSU</div>
+        <div class="exp-period">Aug 2025 – May 2027</div>
+      </div>
+      <div>
+        <div class="exp-role">MS Applied Data Intelligence</div>
+        <ul class="exp-points">
+          <li>Machine Learning, Data Warehousing, Data Visualization, Distributed Systems</li>
+          <li>Building production-grade data systems combining modern DE tooling with AI/ML capabilities</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div>
+      <div class="section-label">Get In Touch</div>
+      <h2 class="contact-title">Let's build something <span>together.</span></h2>
+      <p style="color:var(--muted); font-size:0.9rem; line-height:1.7; font-weight:300;">
+        Open to Summer 2026 Data Engineering internship opportunities. 
+        Based in San Jose, CA. Available for hybrid or remote roles.
+      </p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:yashashree.shinde@sjsu.edu" class="contact-link">
+        <div class="contact-link-icon">✉</div>
+        <div>
+          <span class="contact-link-label">Email</span>
+          <span class="contact-link-value">yashashree.shinde@sjsu.edu</span>
+        </div>
+      </a>
+      <a href="https://linkedin.com/in/yashashree1" target="_blank" class="contact-link">
+        <div class="contact-link-icon">in</div>
+        <div>
+          <span class="contact-link-label">LinkedIn</span>
+          <span class="contact-link-value">linkedin.com/in/yashashree1</span>
+        </div>
+      </a>
+      <a href="https://github.com/yashashree5" target="_blank" class="contact-link">
+        <div class="contact-link-icon">GH</div>
+        <div>
+          <span class="contact-link-label">GitHub</span>
+          <span class="contact-link-value">github.com/yashashree5</span>
+        </div>
+      </a>
+      <a href="https://bart-transit-ys.streamlit.app" target="_blank" class="contact-link">
+        <div class="contact-link-icon" style="color:var(--accent3); border-color:rgba(106,247,200,0.2); background:rgba(106,247,200,0.05);">↗</div>
+        <div>
+          <span class="contact-link-label">Live Project</span>
+          <span class="contact-link-value">BART Transit Dashboard</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">YS<span>.</span></div>
+  <p>© 2026 Yashashree Shinde · San Jose, CA</p>
+  <p>Built with HTML · CSS · JS</p>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0;
+  let ringX = 0, ringY = 0;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    cursor.style.left = mouseX - 6 + 'px';
+    cursor.style.top = mouseY - 6 + 'px';
+  });
+
+  function animateRing() {
+    ringX += (mouseX - ringX - 20) * 0.12;
+    ringY += (mouseY - ringY - 20) * 0.12;
+    ring.style.left = ringX + 'px';
+    ring.style.top = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Hover effects on links
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'scale(2.5)';
+      ring.style.transform = 'scale(1.5)';
+      ring.style.borderColor = 'rgba(124,106,247,0.8)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'scale(1)';
+      ring.style.transform = 'scale(1)';
+      ring.style.borderColor = 'rgba(124,106,247,0.4)';
+    });
+  });
+
+  // Intersection observer for scroll animations
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.project-card, .skill-group, .exp-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
